@@ -26,7 +26,40 @@ if uploaded_file1 and uploaded_file2:
         combined_df['U'] = combined_df['U'].astype(str)
         combined_df['T'] = pd.to_numeric(combined_df['T'], errors='coerce')
 
-        # Keep going with analysis...
+        # Identify correct responses (S == U)
+        correct_df = combined_df[combined_df['S'] == combined_df['U']]
+        num_correct = len(correct_df)
+        total_responses = len(combined_df)
+        percent_accuracy = num_correct / total_responses if total_responses else 0
 
-except Exception as e:
-    st.error(f"❌ Error: {e}")
+        # Mean and SD of column T (response time) for correct responses
+        mean_rt = correct_df['T'].mean()
+        sd_rt = correct_df['T'].std()
+
+        # Display results
+        result_df = pd.DataFrame([{
+            "Mean RT": round(mean_rt, 2),
+            "SD RT": round(sd_rt, 2),
+            "Accurate Responses": num_correct,
+            "Percent Accuracy": round(percent_accuracy, 4)
+        }])
+
+        st.success("✅ Analysis complete!")
+        st.dataframe(result_df)
+
+        # Prepare Excel file with stats + raw data
+        final_df = pd.concat([result_df, combined_df], ignore_index=True)
+        output = io.BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            final_df.to_excel(writer, index=False)
+
+        # Download button
+        st.download_button(
+            label="📥 Download Full Excel Report",
+            data=output.getvalue(),
+            file_name="analysis_output.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+
+    except Exception as e:
+        st.error(f"❌ Error: {e}")
