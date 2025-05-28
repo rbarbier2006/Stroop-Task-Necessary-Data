@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import io
 
-st.title("CSV Response Accuracy Analyzer")
+st.title("Stroop Task Response Accuracy Analyzer")
 
 # Upload two CSV files
 uploaded_file1 = st.file_uploader("Upload First CSV File", type=["csv"])
