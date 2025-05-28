@@ -25,4 +25,4 @@ if uploaded_file1 and uploaded_file2:
 
         # Convert types
         combined_df['S'] = combined_df['S'].astype(str)
-        combined_df['U'] = combined_df['U'].asty
+        combined_df['U'] = combined_df['U'].astype(str)
